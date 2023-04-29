@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     private GameState state = GameState.MENU;
     private int readyPlayers = 0;
     private const int PLAYERMODULO = 2;
+    private int animationsCompleted = 0;
 
 
     [SerializeField] private int maxScore = 5;
@@ -24,7 +26,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<ActionMapping> actionResponses = new List<ActionMapping>();
 
     private int gamePoints = 0;
-    public int GamePoints { get { return gamePoints; } }
     [Header("UI")]
     [SerializeField] private Slider slider;
     [SerializeField] private Transform leftSide;
@@ -46,7 +47,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
 #if UNITY_EDITOR
-            Debug.Break();
+            EditorApplication.ExitPlaymode();
 #else
             Application.Quit();
 #endif
@@ -116,7 +117,7 @@ public class GameManager : MonoBehaviour
     private void CalculateGameResult()
     {
         List<KeyValuePair<PlayerKeyMapping, ActionEnum>> list = choices.ToList();
-        List<PlayerKeyMapping> attackers = new List<PlayerKeyMapping>();
+        Dictionary<PlayerKeyMapping, int> attackers =  new Dictionary<PlayerKeyMapping, int>();
         for (int i = 0; i < list.Count; i++)
         {
             for (int j = i; j < list.Count; j++)
@@ -129,23 +130,39 @@ public class GameManager : MonoBehaviour
                 ActionMapping actionMapping = actionResponses[(int)list[i].Value];
                 if (actionMapping.win.Contains(list[j].Value))
                 {
-                    gamePoints += i % PLAYERMODULO == 0 ? 1 : -1;
-                    attackers.Add(list[i].Key);
+                    int points = i % PLAYERMODULO == 0 ? 1 : -1;
+
+                    if(attackers.ContainsKey(list[i].Key))
+                    {
+                        attackers[list[i].Key] += points;
+                    }
+                    attackers.Add(list[i].Key, points);
                 }
                 if (actionMapping.lose.Contains(list[j].Value))
                 {
-                    gamePoints += i % PLAYERMODULO == 0 ? -1 : 1;
-                    attackers.Add(list[j].Key);
+                    int points = i % PLAYERMODULO == 0 ? -1 : 1;
+                    if (attackers.ContainsKey(list[j].Key))
+                    {
+                        attackers[list[j].Key] += points;
+                    }
+                    attackers.Add(list[j].Key, points);
                 }
             }
         }
 
         state = GameState.ANIMATION;
-        foreach (PlayerKeyMapping player in attackers)
+        animationsCompleted = attackers.Count;
+        foreach (KeyValuePair<PlayerKeyMapping, int> player in attackers)
         {
             StartCoroutine(PlayAnimation(player));
         }
 
+        StartCoroutine(CompleteRound());
+    }
+
+    private IEnumerator CompleteRound()
+    {
+        yield return new WaitUntil(() => animationsCompleted <= 0);
         choices.Clear();
         readyPlayers = 0;
         keyMapping.Where(x => x.ready).ToList().ForEach(x =>
@@ -164,13 +181,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayAnimation(PlayerKeyMapping player)
+    private IEnumerator PlayAnimation(KeyValuePair<PlayerKeyMapping, int> player)
     {     
-        yield return new WaitForSeconds(player.playerModel.animationTimeUntilAttack);
+        yield return new WaitForSeconds(player.Key.playerModel.animationTimeUntilAttack);
 
+        gamePoints += player.Value;
         slider.value = gamePoints;
 
-        yield return new WaitForSeconds(player.playerModel.animationTimeReturn);
+        yield return new WaitForSeconds(player.Key.playerModel.animationTimeReturn);
+        animationsCompleted--;
     }
 
     private void GameEnd()
