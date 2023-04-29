@@ -154,6 +154,7 @@ public class GameManager : MonoBehaviour
         animationsCompleted = attackers.Count;
         foreach (KeyValuePair<PlayerKeyMapping, int> player in attackers)
         {
+            player.Key.playerModel.StartAnimation();
             StartCoroutine(PlayAnimation(player));
         }
 
