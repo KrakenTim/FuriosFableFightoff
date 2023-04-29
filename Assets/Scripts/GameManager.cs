@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour
     {
         MENU = 0,
         ROUND = 1,
-        END = 2,
+        ANIMATION = 2,
+        END = 3,
     }
 
     private GameState state = GameState.MENU;
@@ -28,7 +29,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Slider slider;
     [SerializeField] private Transform leftSide;
     [SerializeField] private Transform rightSide;
-    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private PlayerModel playerPrefab1;
+    [SerializeField] private PlayerModel playerPrefab2;
 
     private Dictionary<PlayerKeyMapping, ActionEnum> choices = new Dictionary<PlayerKeyMapping, ActionEnum>();
 
@@ -41,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
 #if UNITY_EDITOR
             Debug.Break();
@@ -69,12 +71,12 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         List<PlayerKeyMapping> list = keyMapping.ToList();
-        for(int i = 0; i < list.Count; i++)
+        for (int i = 0; i < list.Count; i++)
         {
             if (Input.GetKeyDown(list[i].enterKey))
             {
                 list[i].ready = !list[i].ready;
-                list[i].transform = UpdatePlayerModel(list[i].transform, i % PLAYERMODULO);
+                list[i].playerModel = UpdatePlayerModel(list[i].playerModel, i % PLAYERMODULO);
             }
         }
         readyPlayers = keyMapping.Count(x => x.ready);
@@ -100,6 +102,7 @@ public class GameManager : MonoBehaviour
                 {
                     choices.Add(map, key.action);
                     map.ready = true;
+                    map.playerModel.UpdateReady(map.ready);
                 }
             }
         }
@@ -113,6 +116,7 @@ public class GameManager : MonoBehaviour
     private void CalculateGameResult()
     {
         List<KeyValuePair<PlayerKeyMapping, ActionEnum>> list = choices.ToList();
+        List<PlayerKeyMapping> attackers = new List<PlayerKeyMapping>();
         for (int i = 0; i < list.Count; i++)
         {
             for (int j = i; j < list.Count; j++)
@@ -126,23 +130,47 @@ public class GameManager : MonoBehaviour
                 if (actionMapping.win.Contains(list[j].Value))
                 {
                     gamePoints += i % PLAYERMODULO == 0 ? 1 : -1;
+                    attackers.Add(list[i].Key);
                 }
                 if (actionMapping.lose.Contains(list[j].Value))
                 {
                     gamePoints += i % PLAYERMODULO == 0 ? -1 : 1;
+                    attackers.Add(list[j].Key);
                 }
             }
         }
-        slider.value = gamePoints;
+
+        state = GameState.ANIMATION;
+        foreach (PlayerKeyMapping player in attackers)
+        {
+            StartCoroutine(PlayAnimation(player));
+        }
 
         choices.Clear();
         readyPlayers = 0;
-        keyMapping.Where(x => x.ready).ToList().ForEach(x => x.ready = false);
+        keyMapping.Where(x => x.ready).ToList().ForEach(x =>
+        {
+            x.ready = false;
+            x.playerModel.UpdateReady(x.ready);
+        });
 
         if (gamePoints > maxScore || gamePoints < -maxScore)
         {
             state = GameState.END;
         }
+        else
+        {
+            state = GameState.ROUND;
+        }
+    }
+
+    private IEnumerator PlayAnimation(PlayerKeyMapping player)
+    {     
+        yield return new WaitForSeconds(player.playerModel.animationTimeUntilAttack);
+
+        slider.value = gamePoints;
+
+        yield return new WaitForSeconds(player.playerModel.animationTimeReturn);
     }
 
     private void GameEnd()
@@ -160,11 +188,11 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < side.childCount; i++)
         {
-            UpdatePlayerModel(side.GetChild(i));
+            UpdatePlayerModel(side.GetChild(i).GetComponent<PlayerModel>());
         }
     }
 
-    private Transform UpdatePlayerModel(Transform child = null, int modulo = 0)
+    private PlayerModel UpdatePlayerModel(PlayerModel child = null, int modulo = 0)
     {
         if (child != null)
         {
@@ -174,7 +202,8 @@ public class GameManager : MonoBehaviour
         else
         {
             Transform parent = modulo == 0 ? leftSide : rightSide;
-            return Instantiate(playerPrefab, parent).transform;
+            PlayerModel playerModel = modulo == 0 ? playerPrefab1 : playerPrefab2;
+            return Instantiate(playerModel, parent);
         }
     }
 }

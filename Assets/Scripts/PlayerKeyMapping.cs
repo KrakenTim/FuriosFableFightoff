@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerKeyMapping
 {
-    public bool ready = false;
-    public Transform transform;
+    [HideInInspector] public bool ready = false;
+    [HideInInspector] public PlayerModel playerModel;
     public KeyCode enterKey;
     public List<KeyMapping> attackCodes;
 }

@@ -294,7 +294,7 @@ MonoBehaviour:
   maxScore: 5
   keyMapping:
   - ready: 0
-    transform: {fileID: 0}
+    playerModel: {fileID: 0}
     enterKey: 306
     attackCodes:
     - action: 0
@@ -304,7 +304,7 @@ MonoBehaviour:
     - action: 2
       keyCode: 100
   - ready: 0
-    transform: {fileID: 0}
+    playerModel: {fileID: 0}
     enterKey: 13
     attackCodes:
     - action: 0
@@ -326,7 +326,8 @@ MonoBehaviour:
   slider: {fileID: 2126815296}
   leftSide: {fileID: 1297612108}
   rightSide: {fileID: 288485378}
-  playerPrefab: {fileID: 3191446242186533902, guid: 93e96197cb059bc4ea54a06b5a3230f8, type: 3}
+  playerPrefab1: {fileID: 4340249675776799630, guid: 3198c60e7b9abb04c9cf5c143bef8362, type: 3}
+  playerPrefab2: {fileID: 896167279291936938, guid: ea784461d4221194d929792144f551e4, type: 3}
 --- !u!4 &428788054
 Transform:
   m_ObjectHideFlags: 0
@@ -634,7 +635,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
