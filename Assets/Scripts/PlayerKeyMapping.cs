@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerKeyMapping
 {
     public bool ready = false;
+    public Transform transform;
     public KeyCode enterKey;
     public List<KeyMapping> attackCodes;
 }
