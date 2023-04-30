@@ -20,6 +20,15 @@ public class GameManager : MonoBehaviour
     public GameObject Axe_beats_Shield;
     public GameObject Shield_beats_Sword;
 
+    public GameObject Sword_P1;
+    public GameObject Sword_P2;
+    public GameObject Shield_P1;
+    public GameObject Shield_P2;
+    public GameObject Axe_P1;
+    public GameObject Axe_P2;
+
+
+
     public GameObject Waiting_for_P2;
     public GameObject Waiting_for_P1;
     public GameObject Make_your_Choice;
@@ -72,6 +81,14 @@ public class GameManager : MonoBehaviour
         DependencyTriangle.SetActive(false);
         Controls_P1_Tutorial_Icons.SetActive(false);
         Controls_P2_Tutorial_Icons.SetActive(false);
+
+
+        Sword_P1.SetActive(false);
+        Sword_P2.SetActive(false);
+        Shield_P1.SetActive(false);
+        Shield_P2.SetActive(false);
+        Axe_P1.SetActive(false);
+        Axe_P2.SetActive(false);
     }
 
     public void Update()
@@ -138,11 +155,24 @@ public class GameManager : MonoBehaviour
             DependencyTriangle.SetActive(true);
             Controls_P1_Tutorial_Icons.SetActive(true);
             Controls_P2_Tutorial_Icons.SetActive(true);
+            The_Light_Wins.SetActive(false);
+            The_Dark_Wins.SetActive(false);
         }
     }
 
     private void GameRound()
     {
+        Sword_beats_Axe.SetActive(false);
+        Axe_beats_Shield.SetActive(false);
+        Shield_beats_Sword.SetActive(false);
+
+        Sword_P1.SetActive(false);
+        Sword_P2.SetActive(false);
+        Shield_P1.SetActive(false);
+        Shield_P2.SetActive(false);
+        Axe_P1.SetActive(false);
+        Axe_P2.SetActive(false);
+
         foreach (PlayerKeyMapping map in keyMapping)
         {
             Fight.SetActive(true);
@@ -183,6 +213,9 @@ public class GameManager : MonoBehaviour
             {
                 if (list[i].Key == list[j].Key)
                 {
+                    //Sword_beats_Axe.SetActive(false);
+                    //Axe_beats_Shield.SetActive(false);
+                    //Shield_beats_Sword.SetActive(false);
                     continue;
                 }
 
@@ -213,24 +246,55 @@ public class GameManager : MonoBehaviour
                         attackers.Add(list[j].Key, points);
                     }
                 }
-                if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SHIELD)  || (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SHIELD)) 
+                if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SHIELD)) 
                 {
                     Sword_beats_Axe.SetActive(false);
                     Axe_beats_Shield.SetActive(true);
                     Shield_beats_Sword.SetActive(false);
+                    Axe_P2.SetActive(true);
+                    Shield_P1.SetActive(true);
                 }
-                else if ((list[i].Value == ActionEnum.SWORD) && (list[j].Value == ActionEnum.SHIELD) || (list[j].Value == ActionEnum.SWORD) && (list[i].Value == ActionEnum.SHIELD))
+                else if ((list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SHIELD))
+                {
+                    Sword_beats_Axe.SetActive(false);
+                    Axe_beats_Shield.SetActive(true);
+                    Shield_beats_Sword.SetActive(false);
+                    Axe_P1.SetActive(true);
+                    Shield_P2.SetActive(true);
+                }
+                else if ((list[i].Value == ActionEnum.SWORD) && (list[j].Value == ActionEnum.SHIELD) )
                 {
                     Sword_beats_Axe.SetActive(false);
                     Axe_beats_Shield.SetActive(false);
                     Shield_beats_Sword.SetActive(true);
+                    Sword_P2.SetActive(true);
+                    Shield_P1.SetActive(true);
                 }
-                else if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SWORD) || (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SWORD))
+                else if ((list[j].Value == ActionEnum.SWORD) && (list[i].Value == ActionEnum.SHIELD))
+                {
+                    Sword_beats_Axe.SetActive(false);
+                    Axe_beats_Shield.SetActive(false);
+                    Shield_beats_Sword.SetActive(true);
+                    Sword_P1.SetActive(true);
+                    Shield_P2.SetActive(true);
+                }
+                else if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SWORD))
                 {
                     Sword_beats_Axe.SetActive(true);
                     Axe_beats_Shield.SetActive(false);
                     Shield_beats_Sword.SetActive(false);
+                    Axe_P2.SetActive(true);
+                    Sword_P1.SetActive(true);
                 }
+                else if ( (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SWORD))
+                {
+                    Sword_beats_Axe.SetActive(true);
+                    Axe_beats_Shield.SetActive(false);
+                    Shield_beats_Sword.SetActive(false);
+                    Axe_P1.SetActive(true);
+                    Sword_P2.SetActive(true);
+                }
+
             }
         }
 
@@ -262,12 +326,22 @@ public class GameManager : MonoBehaviour
 
         if (gamePoints > maxScore || gamePoints < -maxScore)
         {
+            if(gamePoints >= maxScore)
+            {
+                The_Light_Wins.SetActive(true);
+            }
+            else if (gamePoints <= -maxScore)
+            {
+                The_Dark_Wins.SetActive(true);
+            }
             state = GameState.END;
         }
         else
         {
             state = GameState.ROUND;
         }
+        
+
     }
 
     private IEnumerator PlayAnimation(KeyValuePair<PlayerKeyMapping, int> player)

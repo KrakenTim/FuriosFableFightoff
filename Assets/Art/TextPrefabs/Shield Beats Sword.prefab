@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5887923213902254293}
   m_Layer: 0
-  m_Name: Sword Beats Axe 2
+  m_Name: Shield Beats Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
