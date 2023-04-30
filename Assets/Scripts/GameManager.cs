@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject DependencyTriangle;
     public GameObject Controls_P1_Tutorial_Icons;
     public GameObject Controls_P2_Tutorial_Icons;
-
+    public GameObject ProgressBar;
 
     public GameObject Waiting_for_P2;
     public GameObject Waiting_for_P1;
@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviour
             readyPlayers = 0;
 
             GameTitle.SetActive(false);
+            ProgressBar.SetActive(true);
             DependencyTriangle.SetActive(true);
             Controls_P1_Tutorial_Icons.SetActive(true);
             Controls_P2_Tutorial_Icons.SetActive(true);
@@ -162,6 +163,11 @@ public class GameManager : MonoBehaviour
 
     private void CalculateGameResult()
     {
+        
+        DependencyTriangle.SetActive(false);
+        Controls_P1_Tutorial_Icons.SetActive(false);
+        Controls_P2_Tutorial_Icons.SetActive(false);
+
         List<KeyValuePair<PlayerKeyMapping, ActionEnum>> list = choices.ToList();
         Dictionary<PlayerKeyMapping, int> attackers =  new Dictionary<PlayerKeyMapping, int>();
         for (int i = 0; i < list.Count; i++)
@@ -181,6 +187,7 @@ public class GameManager : MonoBehaviour
                     if(attackers.ContainsKey(list[i].Key))
                     {
                         attackers[list[i].Key] += points;
+
                     }
                     else
                     {
@@ -200,7 +207,12 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+         
         }
+
+        DependencyTriangle.SetActive(true);
+        Controls_P1_Tutorial_Icons.SetActive(true);
+        Controls_P2_Tutorial_Icons.SetActive(true);
 
         state = GameState.ANIMATION;
         animationsCompleted = attackers.Count;
@@ -256,9 +268,12 @@ public class GameManager : MonoBehaviour
         UpdateTransformSides(rightSide);
 
         GameTitle.SetActive(true);
+        ProgressBar.SetActive(false);
         DependencyTriangle.SetActive(false);
         Controls_P1_Tutorial_Icons.SetActive(false);
         Controls_P2_Tutorial_Icons.SetActive(false);
+        gamePoints = 0;
+
     }
 
     private void UpdateTransformSides(Transform side)
