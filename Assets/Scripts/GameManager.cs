@@ -4,13 +4,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject StartMenu_Canvas;
-    public GameObject Game_Canvas;
-    public GameObject Game;
-    public bool GameIsRunning;
+    public GameObject GameTitle;
+    public GameObject DependencyTriangle;
+    public GameObject Controls_P1_Tutorial_Icons;
+    public GameObject Controls_P2_Tutorial_Icons;
+
+
+    //public GameObject Waiting_for_P2;
+    //public GameObject Waiting_for_P1;
+    //public GameObject Make_your_Choice;
+    //public GameObject Fight;
+    //public GameObject Sword_beats_Axe;
+    //public GameObject Axe_beats_Shield;
+    //public GameObject Shield_beats_Sword;
+    //public GameObject The_Dark_advances;
+    //public GameObject The_Light_advances;
+    //public GameObject The_Dark_Wins;
+    //public GameObject The_Light_Wins;
+
+    public Light2D LightEffect;
+    [SerializeField] private float LightChange; //einstellung wie sich das licht bei sieg niederlaghe ändert
+
     private enum GameState
     {
         MENU = 0,
@@ -25,7 +43,7 @@ public class GameManager : MonoBehaviour
     private int animationsCompleted = 0;
 
 
-    [SerializeField] private int maxScore = 5;
+    [SerializeField] private int maxScore = 2;
     [SerializeField] private List<PlayerKeyMapping> keyMapping = new List<PlayerKeyMapping>();
     [SerializeField] private List<ActionMapping> actionResponses = new List<ActionMapping>();
 
@@ -47,6 +65,10 @@ public class GameManager : MonoBehaviour
         slider.maxValue = maxScore + 1;
         slider.minValue = -(maxScore + 1);
         slider.value = 0;
+
+        DependencyTriangle.SetActive(false);
+        Controls_P1_Tutorial_Icons.SetActive(false);
+        Controls_P2_Tutorial_Icons.SetActive(false);
     }
 
     public void Update()
@@ -56,17 +78,17 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
             EditorApplication.ExitPlaymode();
 #else
-            if(GameIsRunning == true)
-            {
+ //           if(GameIsRunning == true)
+ //           {
                 Application.Quit();
-            }
-            else
-            {
-                StartMenu_Canvas.active = true;
-                Game_Canvas.active = false;
-                Game.active = false;
-                GameIsRunning = false;
-            }
+ //           }
+ //           else
+ //           {
+ //               StartMenu_Canvas.active = true;
+ //               Game_Canvas.active = false;
+ //               Game.active = false;
+ //               GameIsRunning = false;
+ //           }
 #endif
         }
         switch (state)
@@ -88,6 +110,7 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+
         List<PlayerKeyMapping> list = keyMapping.ToList();
         for (int i = 0; i < list.Count; i++)
         {
@@ -104,6 +127,11 @@ public class GameManager : MonoBehaviour
             state = GameState.ROUND;
             keyMapping.Where(x => x.ready).ToList().ForEach(x => x.ready = false);
             readyPlayers = 0;
+
+            GameTitle.SetActive(false);
+            DependencyTriangle.SetActive(true);
+            Controls_P1_Tutorial_Icons.SetActive(true);
+            Controls_P2_Tutorial_Icons.SetActive(true);
         }
     }
 
@@ -223,10 +251,14 @@ public class GameManager : MonoBehaviour
         readyPlayers = 0;
         keyMapping.Where(x => x.ready).ToList().ForEach(x => x.ready = false);
         state = GameState.MENU;
-        GameIsRunning = false;
 
         UpdateTransformSides(leftSide);
         UpdateTransformSides(rightSide);
+
+        GameTitle.SetActive(true);
+        DependencyTriangle.SetActive(false);
+        Controls_P1_Tutorial_Icons.SetActive(false);
+        Controls_P2_Tutorial_Icons.SetActive(false);
     }
 
     private void UpdateTransformSides(Transform side)
