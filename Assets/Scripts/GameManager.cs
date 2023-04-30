@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public GameObject Controls_P1_Tutorial_Icons;
     public GameObject Controls_P2_Tutorial_Icons;
     public GameObject ProgressBar;
+    public GameObject P1Start; 
+    public GameObject P2Start;
 
     public GameObject Sword_beats_Axe;
     public GameObject Axe_beats_Shield;
@@ -129,6 +131,8 @@ public class GameManager : MonoBehaviour
             keyMapping.Where(x => x.ready).ToList().ForEach(x => x.ready = false);
             readyPlayers = 0;
 
+            P1Start.SetActive(false);
+            P2Start.SetActive(false);
             GameTitle.SetActive(false);
             ProgressBar.SetActive(true);
             DependencyTriangle.SetActive(true);
@@ -141,6 +145,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (PlayerKeyMapping map in keyMapping)
         {
+            Fight.SetActive(true);
             if (map.ready)
             {
                 continue;
@@ -158,6 +163,7 @@ public class GameManager : MonoBehaviour
         readyPlayers = keyMapping.Count(x => x.ready);
         if (readyPlayers >= keyMapping.Count)
         {
+            Fight.SetActive(false);
             CalculateGameResult();
         }
     }
