@@ -144,6 +144,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (PlayerKeyMapping map in keyMapping)
         {
+            Fight.SetActive(true);
             if (map.ready)
             {
                 continue;
@@ -161,6 +162,7 @@ public class GameManager : MonoBehaviour
         readyPlayers = keyMapping.Count(x => x.ready);
         if (readyPlayers >= keyMapping.Count)
         {
+            Fight.SetActive(false);
             CalculateGameResult();
         }
     }
