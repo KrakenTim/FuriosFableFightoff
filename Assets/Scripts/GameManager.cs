@@ -14,13 +14,14 @@ public class GameManager : MonoBehaviour
     public GameObject Controls_P2_Tutorial_Icons;
     public GameObject ProgressBar;
 
+    public GameObject Sword_beats_Axe;
+    public GameObject Axe_beats_Shield;
+    public GameObject Shield_beats_Sword;
+
     public GameObject Waiting_for_P2;
     public GameObject Waiting_for_P1;
     public GameObject Make_your_Choice;
     public GameObject Fight;
-    public GameObject Sword_beats_Axe;
-    public GameObject Axe_beats_Shield;
-    public GameObject Shield_beats_Sword;
     public GameObject The_Dark_advances;
     public GameObject The_Light_advances;
     public GameObject The_Dark_Wins;
@@ -206,8 +207,25 @@ public class GameManager : MonoBehaviour
                         attackers.Add(list[j].Key, points);
                     }
                 }
+                if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SHIELD)  || (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SHIELD)) 
+                {
+                    Sword_beats_Axe.SetActive(false);
+                    Axe_beats_Shield.SetActive(true);
+                    Shield_beats_Sword.SetActive(false);
+                }
+                else if ((list[i].Value == ActionEnum.SWORD) && (list[j].Value == ActionEnum.SHIELD) || (list[j].Value == ActionEnum.SWORD) && (list[i].Value == ActionEnum.SHIELD))
+                {
+                    Sword_beats_Axe.SetActive(false);
+                    Axe_beats_Shield.SetActive(false);
+                    Shield_beats_Sword.SetActive(true);
+                }
+                else if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SWORD) || (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SWORD))
+                {
+                    Sword_beats_Axe.SetActive(true);
+                    Axe_beats_Shield.SetActive(false);
+                    Shield_beats_Sword.SetActive(false);
+                }
             }
-         
         }
 
         DependencyTriangle.SetActive(true);
@@ -272,7 +290,11 @@ public class GameManager : MonoBehaviour
         DependencyTriangle.SetActive(false);
         Controls_P1_Tutorial_Icons.SetActive(false);
         Controls_P2_Tutorial_Icons.SetActive(false);
+        Sword_beats_Axe.SetActive(false);
+        Axe_beats_Shield.SetActive(false);
+        Shield_beats_Sword.SetActive(false);
         gamePoints = 0;
+
 
     }
 
