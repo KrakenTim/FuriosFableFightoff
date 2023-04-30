@@ -7,6 +7,10 @@ using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject StartMenu_Canvas;
+    public GameObject Game_Canvas;
+    public GameObject Game;
+    public bool GameIsRunning;
     private enum GameState
     {
         MENU = 0,
@@ -37,6 +41,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        /*StartMenu_Canvas.active = true;
+        Game_Canvas.active = false;
+        Game.active = false;*/
         slider.maxValue = maxScore + 1;
         slider.minValue = -(maxScore + 1);
         slider.value = 0;
@@ -49,7 +56,17 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
             EditorApplication.ExitPlaymode();
 #else
-            Application.Quit();
+            if(GameIsRunning == true)
+            {
+                Application.Quit();
+            }
+            else
+            {
+                StartMenu_Canvas.active = true;
+                Game_Canvas.active = false;
+                Game.active = false;
+                GameIsRunning = false;
+            }
 #endif
         }
         switch (state)
@@ -206,6 +223,7 @@ public class GameManager : MonoBehaviour
         readyPlayers = 0;
         keyMapping.Where(x => x.ready).ToList().ForEach(x => x.ready = false);
         state = GameState.MENU;
+        GameIsRunning = false;
 
         UpdateTransformSides(leftSide);
         UpdateTransformSides(rightSide);
