@@ -14,17 +14,17 @@ public class GameManager : MonoBehaviour
     public GameObject Controls_P2_Tutorial_Icons;
 
 
-    //public GameObject Waiting_for_P2;
-    //public GameObject Waiting_for_P1;
-    //public GameObject Make_your_Choice;
-    //public GameObject Fight;
-    //public GameObject Sword_beats_Axe;
-    //public GameObject Axe_beats_Shield;
-    //public GameObject Shield_beats_Sword;
-    //public GameObject The_Dark_advances;
-    //public GameObject The_Light_advances;
-    //public GameObject The_Dark_Wins;
-    //public GameObject The_Light_Wins;
+    public GameObject Waiting_for_P2;
+    public GameObject Waiting_for_P1;
+    public GameObject Make_your_Choice;
+    public GameObject Fight;
+    public GameObject Sword_beats_Axe;
+    public GameObject Axe_beats_Shield;
+    public GameObject Shield_beats_Sword;
+    public GameObject The_Dark_advances;
+    public GameObject The_Light_advances;
+    public GameObject The_Dark_Wins;
+    public GameObject The_Light_Wins;
 
     public Light2D LightEffect;
     [SerializeField] private float LightChange; //einstellung wie sich das licht bei sieg niederlaghe ändert
