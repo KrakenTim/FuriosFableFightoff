@@ -77,7 +77,8 @@ public class GameManager : MonoBehaviour
             if (Input.GetKeyDown(list[i].enterKey))
             {
                 list[i].ready = !list[i].ready;
-                list[i].playerModel = UpdatePlayerModel(list[i].playerModel, i % PLAYERMODULO);
+                list[i].side = i % PLAYERMODULO;
+                list[i].playerModel = UpdatePlayerModel(list[i].playerModel, list[i].side);
             }
         }
         readyPlayers = keyMapping.Count(x => x.ready);
@@ -130,22 +131,28 @@ public class GameManager : MonoBehaviour
                 ActionMapping actionMapping = actionResponses[(int)list[i].Value];
                 if (actionMapping.win.Contains(list[j].Value))
                 {
-                    int points = i % PLAYERMODULO == 0 ? 1 : -1;
+                    int points = list[i].Key.side == 0 ? 1 : -1;
 
                     if(attackers.ContainsKey(list[i].Key))
                     {
                         attackers[list[i].Key] += points;
                     }
-                    attackers.Add(list[i].Key, points);
+                    else
+                    {
+                        attackers.Add(list[i].Key, points);
+                    }
                 }
                 if (actionMapping.lose.Contains(list[j].Value))
                 {
-                    int points = i % PLAYERMODULO == 0 ? -1 : 1;
+                    int points = list[j].Key.side == 0 ? 1 : -1;
                     if (attackers.ContainsKey(list[j].Key))
                     {
                         attackers[list[j].Key] += points;
                     }
-                    attackers.Add(list[j].Key, points);
+                    else
+                    {
+                        attackers.Add(list[j].Key, points);
+                    }
                 }
             }
         }
