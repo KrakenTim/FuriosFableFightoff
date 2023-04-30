@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public GameObject Controls_P1_Tutorial_Icons;
     public GameObject Controls_P2_Tutorial_Icons;
     public GameObject ProgressBar;
+    public GameObject P1Start; 
+    public GameObject P2Start;
 
     public GameObject Waiting_for_P2;
     public GameObject Waiting_for_P1;
@@ -128,6 +130,8 @@ public class GameManager : MonoBehaviour
             keyMapping.Where(x => x.ready).ToList().ForEach(x => x.ready = false);
             readyPlayers = 0;
 
+            P1Start.SetActive(false);
+            P2Start.SetActive(false);
             GameTitle.SetActive(false);
             ProgressBar.SetActive(true);
             DependencyTriangle.SetActive(true);
