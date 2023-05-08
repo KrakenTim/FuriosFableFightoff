@@ -251,18 +251,26 @@ public class GameManager : MonoBehaviour
                     Sword_beats_Axe.SetActive(false);
                     Axe_beats_Shield.SetActive(true);
                     Shield_beats_Sword.SetActive(false);
-                    Axe_P2.SetActive(true);
-                    Shield_P1.SetActive(true);
+                    Axe_P1.SetActive(true);
+                    Shield_P2.SetActive(true);
                 }
                 else if ((list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SHIELD))
                 {
                     Sword_beats_Axe.SetActive(false);
                     Axe_beats_Shield.SetActive(true);
                     Shield_beats_Sword.SetActive(false);
-                    Axe_P1.SetActive(true);
-                    Shield_P2.SetActive(true);
+                    Axe_P2.SetActive(true);
+                    Shield_P1.SetActive(true);
                 }
                 else if ((list[i].Value == ActionEnum.SWORD) && (list[j].Value == ActionEnum.SHIELD) )
+                {
+                    Sword_beats_Axe.SetActive(false);
+                    Axe_beats_Shield.SetActive(false);
+                    Shield_beats_Sword.SetActive(true);
+                    Sword_P1.SetActive(true);
+                    Shield_P2.SetActive(true);
+                }
+                else if ((list[j].Value == ActionEnum.SWORD) && (list[i].Value == ActionEnum.SHIELD))
                 {
                     Sword_beats_Axe.SetActive(false);
                     Axe_beats_Shield.SetActive(false);
@@ -270,29 +278,21 @@ public class GameManager : MonoBehaviour
                     Sword_P2.SetActive(true);
                     Shield_P1.SetActive(true);
                 }
-                else if ((list[j].Value == ActionEnum.SWORD) && (list[i].Value == ActionEnum.SHIELD))
-                {
-                    Sword_beats_Axe.SetActive(false);
-                    Axe_beats_Shield.SetActive(false);
-                    Shield_beats_Sword.SetActive(true);
-                    Sword_P1.SetActive(true);
-                    Shield_P2.SetActive(true);
-                }
                 else if ((list[i].Value == ActionEnum.AXT) && (list[j].Value == ActionEnum.SWORD))
-                {
-                    Sword_beats_Axe.SetActive(true);
-                    Axe_beats_Shield.SetActive(false);
-                    Shield_beats_Sword.SetActive(false);
-                    Axe_P2.SetActive(true);
-                    Sword_P1.SetActive(true);
-                }
-                else if ( (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SWORD))
                 {
                     Sword_beats_Axe.SetActive(true);
                     Axe_beats_Shield.SetActive(false);
                     Shield_beats_Sword.SetActive(false);
                     Axe_P1.SetActive(true);
                     Sword_P2.SetActive(true);
+                }
+                else if ( (list[j].Value == ActionEnum.AXT) && (list[i].Value == ActionEnum.SWORD))
+                {
+                    Sword_beats_Axe.SetActive(true);
+                    Axe_beats_Shield.SetActive(false);
+                    Shield_beats_Sword.SetActive(false);
+                    Axe_P2.SetActive(true);
+                    Sword_P1.SetActive(true);
                 }
 
             }
